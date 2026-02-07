@@ -11,6 +11,11 @@ export default function Register() {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+  if (!name || !email || !password) {
+    setMessage("All fields are required");
+    return;
+  }
+
   try {
     const res = await fetch(
       "https://auth-backend-o0j6.onrender.com/api/auth/register",
@@ -28,7 +33,9 @@ export default function Register() {
       return;
     }
 
-    setMessage("✅ Registration successful! Please login.");
+    setPassword(""); // ✅ forget password
+    setMessage("✅ Registration successful! Redirecting to login...");
+    setTimeout(() => navigate("/"), 1500);
   } catch (err) {
     setMessage("❌ Server error");
   }

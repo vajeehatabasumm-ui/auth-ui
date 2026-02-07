@@ -7,30 +7,37 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
   const handleLogin = async () => {
-    try {
-      const res = await fetch(
-        "https://auth-backend-o0j6.onrender.com/api/auth/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+  if (!email || !password) {
+    setError("Email and password are required");
+    return;
+  }
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Login failed");
-        return;
+  try {
+    const res = await fetch(
+      "https://auth-backend-o0j6.onrender.com/api/auth/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       }
+    );
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError("❌ Server error");
+    const data = await res.json();
+
+    if (!res.ok) {
+      setError(data.message || "Login failed");
+      return;
     }
-  };
+
+    localStorage.setItem("token", data.token); // ✅ STORE TOKEN
+    setPassword("");                           // ✅ CLEAR PASSWORD
+    navigate("/dashboard");
+  } catch (err) {
+    setError("❌ Server error");
+  }
+};
+
 
   return (
     <div className="auth-wrapper">
