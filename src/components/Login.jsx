@@ -11,7 +11,7 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       const res = await fetch(
-        "https://auth-backend-o0j6.onrender.com/login",
+        "https://auth-backend-o0j6.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -21,14 +21,14 @@ export default function Login() {
 
       const data = await res.json();
 
-      if (res.ok) {
-        localStorage.setItem("token", data.token);
-        navigate("/dashboard");
-      } else {
-        setError(data.message || "Invalid credentials");
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        return;
       }
-    } catch {
-      setError("Server error");
+
+      navigate("/dashboard");
+    } catch (err) {
+      setError("❌ Server error");
     }
   };
 
@@ -48,7 +48,10 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Login</button>
+        <div className="actions">
+          <button onClick={handleLogin}>Login</button>
+          <button onClick={() => navigate("/register")}>Register</button>
+        </div>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
       </div>

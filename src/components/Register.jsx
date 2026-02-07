@@ -16,26 +16,21 @@ export default function Register() {
       "https://auth-backend-o0j6.onrender.com/api/auth/register",
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
       }
     );
 
     const data = await res.json();
 
-    if (res.ok) {
-      setMessage("✅ Registration successful! Please login.");
-    } else {
-      setMessage(data.message || "❌ Registration failed");
+    if (!res.ok) {
+      setMessage(data.message || "Registration failed");
+      return;
     }
-  } catch (error) {
-    setMessage("❌ Server error. Try again later.");
+
+    setMessage("✅ Registration successful! Please login.");
+  } catch (err) {
+    setMessage("❌ Server error");
   }
 };
 
