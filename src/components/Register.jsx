@@ -10,19 +10,35 @@ export default function Register() {
 
   const navigate = useNavigate();
 
-  const handleRegister = () => {
-    // 🔹 get existing users
-    const users = JSON.parse(localStorage.getItem("users")) || [];
+  const handleRegister = async () => {
+  try {
+    const res = await fetch(
+      "https://auth-backend-o0j6.onrender.com/api/auth/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+        }),
+      }
+    );
 
-    // 🔹 add new user
-    users.push({ name, email, password });
+    const data = await res.json();
 
-    // 🔹 save back to localStorage
-    localStorage.setItem("users", JSON.stringify(users));
+    if (res.ok) {
+      setMessage("✅ Registration successful! Please login.");
+    } else {
+      setMessage(data.message || "❌ Registration failed");
+    }
+  } catch (error) {
+    setMessage("❌ Server error. Try again later.");
+  }
+};
 
-    // 🔹 show success message
-    setMessage("✅ Registration successful! Please login.");
-  };
 
   return (
     <div className="auth-wrapper">
